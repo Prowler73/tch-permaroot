@@ -1,6 +1,6 @@
 #!/bin/sh
-
 . /etc/init.d/rootdevice
+
 # Block 1 (Hardening Root & Disabling Telstra Access)
 # Enable Serial Console
 sed -i 's/#//' /etc/inittab
