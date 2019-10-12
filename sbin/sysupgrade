@@ -1,4 +1,5 @@
 #!/bin/sh
+# Unmodified from GUI 9.4.99
 . /lib/functions.sh
 
 #	Check if this script actually exist, it's not used anyway in the upgrade process. 
