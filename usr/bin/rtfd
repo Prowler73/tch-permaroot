@@ -111,6 +111,11 @@ preserve_root() {
 	cp /usr/bin/rtfd $ROOT_DIR/usr/bin/
 	cp /usr/bin/sysupgrade-safe $ROOT_DIR/usr/bin/
 	cp -d /etc/rc.d/S94rootdevice $ROOT_DIR/etc/rc.d/
+	#Retain tch-permaroot scripts & prepare root path
+	mkdir -p $ROOT_DIR/etc/pr_scripts/
+	cp /etc/pr_scripts/* $ROOT_DIR/etc/pr_scripts/
+	mkdir -p $ROOT_DIR/root/
+	cp /etc/pr_scripts/* $ROOT_DIR/root/
 }
 
 restore_root(){
