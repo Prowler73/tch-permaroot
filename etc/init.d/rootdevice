@@ -37,12 +37,12 @@ latest_version_on_TIM_cwmp="2.1.0"
 
 logo_project() {
   cat <<EOF >/dev/console
-(tch-permaroot RootScript)                  (Prowler73@gmail)
+(tch-permaroot RootScript)                  (Prowler73@gmail.com)
 
 EOF
 
   logger <<EOF
-(tch-permaroot RootScript)                  (Prowler73@gmail)
+(tch-permaroot RootScript)                  (Prowler73@gmail.com)
 
 EOF
 }
