@@ -30,7 +30,7 @@ EXTRA_HELP="\
         debug   force command with debug log
 "
 #
-version_tch-permaroot=20191013
+echo "tch-permaroot RootScript version 20191013"
 #Latest version on TIM cwmp for version spoof
 latest_version_on_TIM_cwmp="2.1.0"
 
@@ -227,7 +227,7 @@ install_permaroot() {
   root #This check root availability
 
   if [ -d /etc/pr_scripts ]; then
-    for file in /etc/pr_scripts/*; do
+    for file in /etc/pr_scripts/*.sh; do
       logger_command "Executing $file" ConsoleOnly
       . $file
     done
