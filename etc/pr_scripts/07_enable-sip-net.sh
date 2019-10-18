@@ -1,6 +1,24 @@
 #!/bin/ash
 
 # Block 3 (Setting VOIP)
+uci set mmpbx.scc_generic.network={'fxo_net','sip_net','sip_net_1'}
+uci set mmpbx.dial_plan_generic.network={'internal_net','sip_net','sip_net_1'}
+uci set mmpbx.media_filter_audio_sip.network={'sip_net','sip_net_1'}
+##uci set mmpbx.dial.network={'DEFAULT_NETWORK','internal_net','sip_net','sip_net_1'}
+uci set mmpbx.stutterdial.network={'DEFAULT_NETWORK','internal_net','sip_net','sip_net_1'}
+uci set mmpbx.facility.network={'DEFAULT_NETWORK','internal_net','sip_net','sip_net_1','fxo_net'}
+uci set mmpbx.ringback.network={'DEFAULT_NETWORK','internal_net','sip_net','sip_net_1'}
+uci set mmpbx.busy.network={'DEFAULT_NETWORK','internal_net','sip_net','sip_net_1','builtin_internal_network'}
+uci set mmpbx.congestion.network={'DEFAULT_NETWORK','internal_net','sip_net','sip_net_1','builtin_internal_network'}
+uci set mmpbx.call_waiting.network={'DEFAULT_NETWORK','internal_net','sip_net','sip_net_1','fxo_net'}
+uci set mmpbx.bargein.network={'DEFAULT_NETWORK','internal_net','sip_net','sip_net_1','builtin_internal_network'}
+uci set mmpbx.confirmation.network={'DEFAULT_NETWORK','internal_net','sip_net','sip_net_1','fxo_net'}
+uci commit
+/etc/init.d/nginx restart
+/etc/init.d/mmpbxd restart
+
+uci set mmpbx.sip_net_1=network
+uci set mmpbx.sip_net_1.config='mmpbxrvsipnet'
 uci set mmpbxrvsipnet.sip_net.primary_proxy='primary.proxy.0'
 uci set mmpbxrvsipnet.sip_net.user_friendly_name='SIP Network 0'
 uci set mmpbxrvsipnet.sip_net.local_port='5070'
@@ -12,10 +30,6 @@ uci set mmpbxrvsipnet.sip_profile_0.enabled='1'
 uci set mmpbxbrcmfxsdev.fxs_dev_0.relay_state='1'
 uci set mmpbxbrcmfxsdev.fxs_dev_1.relay_state='1'
 uci set mmpbxrvsipnet.sip_profile_1.enabled='1'
-uci set mmpbxbrcmfxsdev.fxs_dev_0.relay_state='1'
-uci set mmpbxbrcmfxsdev.fxs_dev_1.relay_state='1'
-uci set mmpbx.sip_net_1=network
-uci set mmpbx.sip_net_1.config='uci set mmpbxrvsipnet'
 uci set mmpbxrvsipnet.sip_net_1=network
 uci set mmpbxrvsipnet.sip_net_1.session_expires='180'
 uci set mmpbxrvsipnet.sip_net_1.no_answer_response='480'
