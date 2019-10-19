@@ -30,7 +30,7 @@ EXTRA_HELP="\
         debug   force command with debug log
 "
 #
-echo "tch-permaroot RootScript version 20191013"
+echo "tch-permaroot RootScript version 20191019"
 #Latest version on TIM cwmp for version spoof
 latest_version_on_TIM_cwmp="2.1.0"
 
@@ -79,50 +79,38 @@ logger_command() {
 }
 #################################################
 
-transfer_bank() {
-  #This function will clone banks and switch to bank2
+set_optimal_bank_plan() {
+  #This function will setup the optimal bank plan (bank1: empty & active - bank2: booted & rooted)
   bootedbank=$(cat /proc/banktable/booted)
   activebank=$(cat /proc/banktable/active)
+  activeversion=$(cat /proc/banktable/activeversion)
+  passiveversion=$(cat /proc/banktable/passiveversion)
+  
   if [ "$bootedbank" == "bank_1" ]; then
+	echo "  bank_1 is currently booted... Changing to optimal bank plan..." >/dev/console
     rm -r /overlay/bank_2
 	mkdir /overlay/bank_2
 	cp -a /overlay/bank_1/* /overlay/bank_2/
-  else
-    rm -r /overlay/bank_1
-	mkdir /overlay/bank_1
-	cp -a /overlay/bank_2/* /overlay/bank_1/
-   fi
-  if [ -f /overlay/bank_2/etc/init.d/rootdevice ]; then
-    mtd write /dev/mtd3 /dev/mtd4
-  fi
-  activeversion=$(cat /proc/banktable/activeversion)
-  passiveversion=$(cat /proc/banktable/passiveversion)
-
-  if [ "$activeversion" == "$passiveversion" ]; then
-    echo bank_1 >/proc/banktable/active
-    reboot
-  fi
-}
-
-restore_bank() {
- if [ -f "/overlay/$activebank" ]; then
-    rm -r "/overlay/$activebank"
-  fi
-  mkdir "/overlay/$activebank"
-  cp -a "/overlay/$bootedbank/*" "/overlay/$activebank"
-  if [ -f "/overlay/$activebank/etc/init.d/rootdevice" ]; then
-    if [ "$bootedbank" == "bank_1" ]; then
-      mtd write /dev/mtd3 /dev/mtd4
-	  echo bank_1 >/proc/banktable/active
-	  mtd erase /dev/mtd3
-    else
-	  echo bank_1 >/proc/banktable/active
-      mtd erase /dev/mtd3
-    fi
+	mtd write /dev/mtd3 /dev/mtd4
+	mtd erase /dev/mtd3
+	echo bank_1 >/proc/banktable/active
 	reboot
+  else
+	echo "  bank_2 is currently booted... " >/dev/console
+		if [ "$activebank" == "bank_2" ]; then
+			echo "  bank_2 is currently active... Changing to optimal bank plan..." >/dev/console
+			rm -r /overlay/bank_1
+			mkdir /overlay/bank_1
+			cp -a /overlay/bank_2/* /overlay/bank_1/
+			mtd erase /dev/mtd3
+			echo bank_1 >/proc/banktable/active
+			reboot
+		else 
+			echo "  bank_1 is currently active... Optimal bank plan already in place... No change..." >/dev/console
+			echo bank_1 >/proc/banktable/active
+		fi
   fi
-}
-	
+}	
 
 disable_upload_coredump_and_reboot() {
   #disable upload to tim server for coredump...
@@ -239,7 +227,7 @@ install_permaroot() {
   root #This check root availability
 
   if [ -d /etc/pr_scripts ]; then
-    for file in /etc/pr_scripts/*.sh; do
+    for file in /etc/pr_scripts/setup.sh; do
       logger_command "Executing $file" ConsoleOnly
       . $file
     done
@@ -260,14 +248,7 @@ check_bank() {
   env_config_bank1="/overlay/bank_1/etc/config/env"
   if [ "$bootedbank" == "$activebank" ]; then
     echo "  Detected non optimal bank plan... Restoring..." >/dev/console
-    restore_bank
-  fi
-
-  if [ "$bootedbank" == "bank_1" ]; then
-    echo "  Detected non optimal bank plan... Restoring..." >/dev/console
-    transfer_bank
-  else
-    echo "  Optimal bank plan in place... Not transferring..." >/dev/console
+    set_optimal_bank_plan
   fi
 }
 
