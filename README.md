@@ -19,7 +19,7 @@ These script files were based on & modified from the Custom Gui for Technicolor 
 <h3>Then execute these commands (Active WAN/Internet connection required):</h3>
 
 ```
-curl -L -k https://github.com/Prowler73/tch-permaroot/releases/download/Alpha_Release/tch-permaroot.tar.bz2 --output /tmp/tch-permaroot.tar.bz2
+curl -L -k https://github.com/Prowler73/tch-permaroot/blob/master/tch-permaroot.tar.bz2 --output /tmp/tch-permaroot.tar.bz2
 bzcat /tmp/tch-permaroot.tar.bz2 | tar -C / -xvf -
 /etc/init.d/rootdevice force
 ```
